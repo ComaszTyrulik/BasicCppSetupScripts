@@ -130,3 +130,6 @@ dmypy.json
 
 # PyCharm project folder
 .idea/
+
+# Project files
+scripts_config.yaml

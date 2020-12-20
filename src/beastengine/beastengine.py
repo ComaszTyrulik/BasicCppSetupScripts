@@ -20,17 +20,17 @@ class BeastEngine:
     PROGRAM_NAME = 'beast'
     PROGRAM_USAGE = '''{green}beast <command> [<args>]
 
-{white}This program let's you configure and manage the BeastEngine project.
+{white}This program let's you configure and manage the {project_name} project.
 Use it to install all the required dependencies and configure CMake project.
 You can also use it for building the project with desired configuration.{reset}
 
 {purple}Configuration commands{white}
- {green}{init}{white}          Installs BeastEngine. Creates 'build' directory and downloads all necessary dependencies
- {green}{configure}{white}     Configures CMake project inside the 'build' directory
+ {green}{init}{white}          Installs {project_name}. Creates build ('{build_dir_name}') directory and downloads all necessary dependencies
+ {green}{configure}{white}     Configures CMake project inside the build ('{build_dir_name}') directory
  {green}{install_deps}{white}       Installs and/or updates project dependencies 
 
 {purple}Development commands{white}
- {green}{build}{white}         Builds BeastEngine project based on given parameters
+ {green}{build}{white}         Builds {project_name} project based on given parameters into the build ('{build_dir_name}') directory 
  {green}{class}{white}         Performs operations on classes
  {green}{config}{white}        Performs operations on config
 
@@ -39,8 +39,6 @@ You can also use it for building the project with desired configuration.{reset}
 
     def __init__(
             self,
-            project_working_dir,
-            build_dir,
             command_runner: CommandRunner,
             config: Config,
             conan: Conan,
@@ -51,11 +49,10 @@ You can also use it for building the project with desired configuration.{reset}
         self.config = config
         self.command_runner = command_runner
 
-        self.project_dir = project_working_dir
-        self.build_dir = build_dir
-
         self.conan = conan
         self.cmake = cmake
+
+        self.build_dir_path = self.config.build_directory_path
 
         self.target_config_manager = target_config_manager
         self.class_files_helper = class_files_helper
@@ -63,18 +60,23 @@ You can also use it for building the project with desired configuration.{reset}
         self.create_program()
 
     def create_program(self):
+        project_name = self.config.cmake['project']['name']
+        substitution_map = {'project_name': project_name, 'build_dir_name': self.build_dir_path}
+
         parser =\
             argparse.ArgumentParser(
                 prog=self.PROGRAM_NAME,
-                usage=BeastCommandHelper.format_text(self.PROGRAM_USAGE),
+                usage=BeastCommandHelper.format_text(self.PROGRAM_USAGE, substitution_map),
                 formatter_class=argparse.RawDescriptionHelpFormatter
             )
 
         parser.add_argument('command', help='command to execute', metavar='<command>')
         command_line_args = parser.parse_args(sys.argv[1:2])
-        command = command_line_args.command
+        self.execute_command(command_line_args.command)
+
+    def execute_command(self, command):
         if command == BeastCommandHelper.COMMAND_NAME_INIT:
-            Init(self.project_dir, self.conan, self.cmake)
+            self.init()
         elif command == BeastCommandHelper.COMMAND_NAME_CONFIGURE:
             Configure(self.cmake)
         elif command == BeastCommandHelper.COMMAND_NAME_BUILD:
@@ -86,8 +88,24 @@ You can also use it for building the project with desired configuration.{reset}
         elif command == BeastCommandHelper.COMMAND_NAME_CONFIG:
             self.config_command()
 
+    def init(self):
+        usage = '''{green}beast {init}{white}
+        Initializes the project.
+        Recreates build ('{build_dir_name}') directory. If it exists, the directory is deleted and a fresh one is created.
+        Downloads Conan dependencies based on the 'conanfile.py' file.
+        Generates project target's CMake configuration files. Initializes required CMake variables.
+        Configures CMake by running {yellow}{cmake_command}{reset}
+        '''
+        cmake_command = self.cmake.COMMAND_INIT.format(self.build_dir_path)
+        substitution_map = {'build_dir_name': self.build_dir_path, 'cmake_command': cmake_command}
+
+        parser = create_arguments_parser(usage=BeastCommandHelper.format_text(usage, substitution_map))
+        parser.parse_args(sys.argv[2:])
+
+        Init(self.config.build_directory_path, self.conan, self.cmake)
+
     def build(self):
-        usage = '''{green}beast build [-c|--config CONFIG <args>]
+        usage = '''{green}beast {build} [-c|--config CONFIG <args>]
 
 {purple}Available arguments{white}
 {green}-c --config{white}   Defines the configuration in which the project will be built.
@@ -114,7 +132,7 @@ You can also use it for building the project with desired configuration.{reset}
         usage = '''{green}beast config [<args>]
 
 {purple}Available arguments{white}
-{green}--list-targets{white}   Shows a list of project's targets. Those targets can be used by {class} commands 
+{green}--list-targets{white}   Shows a list of project's targets. Those targets can be used by {class} commands
 '''
         parser = create_arguments_parser(usage=BeastCommandHelper.format_text(usage))
         parser.add_argument('--list-targets', help='show available config targets', action='store_true')

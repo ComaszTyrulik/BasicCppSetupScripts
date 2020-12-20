@@ -1,0 +1,1 @@
+@.\.env\Scripts\activate.bat & python -m pip %* & .\.env\Scripts\deactivate.bat

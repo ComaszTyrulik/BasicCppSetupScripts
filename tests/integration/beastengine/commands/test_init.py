@@ -20,7 +20,7 @@ def test_constructor_will_remove_existing_build_directory(tmpdir):
     conan_mock = MagicMock(Conan)
     cmake_mock = MagicMock(CMake)
 
-    Init(project_directory, conan_mock, cmake_mock)
+    Init(build_directory, conan_mock, cmake_mock)
 
     assert os.path.isdir(expected_directory_to_be_deleted) is False
 
@@ -34,7 +34,7 @@ def test_constructor_will_recreate_build_directory(tmpdir):
     conan_mock = MagicMock(Conan)
     cmake_mock = MagicMock(CMake)
 
-    Init(project_directory, conan_mock, cmake_mock)
+    Init(build_directory, conan_mock, cmake_mock)
 
     assert os.path.isdir(build_directory) is True
 
@@ -47,7 +47,9 @@ def test_constructor_will_call_conan_and_cmake(tmpdir):
 
     cmake_mock = MagicMock(CMake)
     cmake_mock.generate_configs = MagicMock()
+    cmake_mock.configure = MagicMock()
 
     Init(project_directory, conan_mock, cmake_mock)
     conan_mock.install.assert_called_once()
     cmake_mock.generate_configs.assert_called_once()
+    cmake_mock.configure.assert_called_once()

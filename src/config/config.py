@@ -1,27 +1,32 @@
-from src.json_utils.json_manager import JSONManager
+from src.yaml_utils.yaml_manager import YAMLManager
 
 
 class Config:
-    JSON_STR_INDENT = 4
-
     TARGET_NAME_LIB = 'lib'
     TARGET_NAME_TESTS = 'tests'
 
-    json_config: dict
+    config: dict
     cmake: dict
 
-    def __init__(self, config_path, json_manager: JSONManager):
-        self.config_path = config_path
-        self.json_manager = json_manager
-        self.json_config = json_manager.load_from_file(config_path)
+    project_path: str
+    build_directory_path: str
 
-        self.cmake = self.json_config['cmake_config']
+    def __init__(self, scripts_config_path, config_files_manager: YAMLManager):
+        self.config_files_manager = config_files_manager
+
+        scripts_config = config_files_manager.load_from_file(scripts_config_path)
+        self.project_path = scripts_config['project_path']
+        self.config_path = scripts_config['config_path']
+
+        self.config = config_files_manager.load_from_file(self.config_path)
+        self.cmake = self.config['cmake_config']
+        self.build_directory_path = f'{self.project_path}/{self.cmake["build_directory_name"]}'
 
     def __getitem__(self, item):
-        return self.json_config[item]
+        return self.config[item]
 
     def update(self):
-        self.json_manager.save_to_file(self.json_config, self.config_path, self.JSON_STR_INDENT)
+        self.config_files_manager.save_to_file(self.config, self.config_path)
 
     def get_target_config_by_name(self, target_name):
         try:
