@@ -1,0 +1,1 @@
+@.env\Scripts\activate.bat & python %* & .env\Scripts\deactivate.bat

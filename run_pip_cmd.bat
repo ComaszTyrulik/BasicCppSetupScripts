@@ -1,1 +1,1 @@
-@.\.env\Scripts\activate.bat & python -m pip %* & .\.env\Scripts\deactivate.bat
+@run_py_cmd.bat -m pip %*

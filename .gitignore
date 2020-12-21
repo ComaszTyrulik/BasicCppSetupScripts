@@ -132,4 +132,4 @@ dmypy.json
 .idea/
 
 # Project files
-scripts_config.yaml
+config/scripts_config.yaml

@@ -17,7 +17,7 @@ from src.beastengine.commands.class_commands.target_cmake_vars_file_opener impor
 colorama.init(autoreset=True)
 
 file_opener = FileOpener()
-config = Config(get_scripts_config_path('./'), YAMLManager(file_opener))
+config = Config(get_scripts_config_path('/'), YAMLManager(file_opener))
 command_runner = CommandRunner()
 
 project_working_dir = config.project_path

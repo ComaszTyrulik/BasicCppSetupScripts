@@ -2,11 +2,11 @@ from argparse import ArgumentParser
 
 
 def get_scripts_config_path(project_path: str):
-    return f'{project_path}scripts_config.yaml'
+    return f'{project_path}config/scripts_config.yaml'
 
 
 def get_scripts_dist_config_path(project_path: str):
-    return f'{project_path}scripts_config.yaml.dist'
+    return f'{project_path}config/scripts_config.yaml.dist'
 
 
 def create_arguments_parser(program=None, usage=None, description=None, formatter_class=None):

@@ -1,1 +1,1 @@
-@.\.env\Scripts\activate.bat & python run_tests.py %* & .\.env\Scripts\deactivate.bat
+@run_py_cmd.bat run_tests.py %*
