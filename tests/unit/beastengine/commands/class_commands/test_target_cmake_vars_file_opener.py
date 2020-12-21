@@ -4,7 +4,6 @@ from mock import MagicMock
 from src.config.config import Config
 from src.files.file_opener import FileOpener
 import src.beastengine.commands.class_commands.target_cmake_vars_file_opener as file_opener
-from tests.tests_utilities.micro_mock import MicroMock
 
 
 class CommonTestData:

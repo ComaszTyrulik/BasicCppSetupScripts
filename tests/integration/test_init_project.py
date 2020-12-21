@@ -32,5 +32,5 @@ config_path: empty
     init(project_directory, expected_project_path, expected_config_path)
 
     actual_config = yaml_manager.load_from_file(expected_config_path)
-    assert actual_config['project_path'] == expected_project_path
-    assert actual_config['config_path'] == expected_config_path
+    assert expected_project_path == actual_config['project_path']
+    assert expected_config_path == actual_config['config_path']

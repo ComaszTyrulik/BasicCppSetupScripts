@@ -13,13 +13,13 @@ def init(cwd: str, project_path: str, config_path: str):
     config_filename = get_scripts_config_path(cwd)
 
     shutil.copyfile(dist_config_filename, config_filename)
-    json_manager = YAMLManager(FileOpener())
+    yaml_manager = YAMLManager(FileOpener())
 
-    config = json_manager.load_from_file(config_filename)
+    config = yaml_manager.load_from_file(config_filename)
     config['project_path'] = project_path
     config['config_path'] = config_path
 
-    json_manager.save_to_file(config, config_filename)
+    yaml_manager.save_to_file(config, config_filename)
 
 
 def get_project_path():
@@ -27,7 +27,7 @@ def get_project_path():
     default_project_path = Path(current_filename).resolve().parent.parent.__str__().replace('\\', '/')
 
     parser = PromptParser()
-    parser.add_argument('--project_path', '-pp', help='Path to your project\'s files', default=default_project_path)
+    parser.add_argument('--project_path', '-pp', help='Path to your C++ project\'s files', default=default_project_path)
 
     return parser.parse_args().project_path.replace('\\', '/')
 
@@ -36,7 +36,7 @@ def get_config_path(project_path: str):
     default_config_path = f'{project_path}/config/config.yaml'
 
     parser = PromptParser()
-    parser.add_argument('--config_path', '-cp', help='Path to your project\'s config', default=default_config_path)
+    parser.add_argument('--config_path', '-cp', help='Path to your C++ project\'s config', default=default_config_path)
 
     return parser.parse_args().config_path.replace('\\', '/')
 

@@ -1,7 +1,5 @@
 import argparse
-
 import pytest
-
 import src.functions as functions
 
 from mock import MagicMock

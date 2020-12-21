@@ -8,8 +8,8 @@ class YAMLManager:
         self.file_opener = file_opener
 
     def load_from_file(self, file_path: str):
-        json_file = self.file_opener.open(file_path)
-        return safe_load(json_file.get_content())
+        file = self.file_opener.open(file_path)
+        return safe_load(file.get_content())
 
     def save_to_file(self, yaml_object: dict, file_path: str):
         yaml_string = safe_dump(yaml_object)

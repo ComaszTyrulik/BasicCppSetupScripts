@@ -12,7 +12,7 @@ class CommonTestData:
         self.yaml_manager_mock = MagicMock(YAMLManager)
         self.yaml_manager_mock.load_from_file = MagicMock()
         self.scripts_config = {'project_path': 'pp', 'config_path': 'cp'}
-        self.config_json = \
+        self.config_dict = \
             {
                 "cmake_config": {
                     "build_directory_name": "build",
@@ -107,21 +107,21 @@ def test_init_will_load_config_json_from_given_file():
     test_data = CommonTestData()
 
     scripts_config_path = 'path/to/scripts/yaml/file.yaml'
-    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_json]
+    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_dict]
 
     sut = Config(scripts_config_path, test_data.yaml_manager_mock)
-    assert test_data.config_json == sut.config
+    assert test_data.config_dict == sut.config
 
 
 def test_init_will_load_build_directory_config_params():
     test_data = CommonTestData()
 
-    expected_build_dir_name = test_data.config_json['cmake_config']['build_directory_name']
+    expected_build_dir_name = test_data.config_dict['cmake_config']['build_directory_name']
     expected_build_dir_path = f'{test_data.scripts_config["project_path"]}/{expected_build_dir_name}'
 
     scripts_config_path = 'path/to/scripts/yaml/file.yaml'
 
-    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_json]
+    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_dict]
 
     sut = Config(scripts_config_path, test_data.yaml_manager_mock)
     assert expected_build_dir_name == sut.config['cmake_config']['build_directory_name']
@@ -133,7 +133,7 @@ def test_init_will_load_scripts_config_from_file():
     scripts_config_path = 'path/to/scripts/yaml/file.yaml'
 
     expected_scripts_config = {'project_path': 'pp', 'config_path': 'cp'}
-    test_data.yaml_manager_mock.load_from_file.side_effect = [expected_scripts_config, test_data.config_json]
+    test_data.yaml_manager_mock.load_from_file.side_effect = [expected_scripts_config, test_data.config_dict]
 
     sut = Config(scripts_config_path, test_data.yaml_manager_mock)
     assert expected_scripts_config['project_path'] == sut.project_path
@@ -144,11 +144,11 @@ def test_update_config_will_save_updated_config_object_into_selected_config_file
     test_data = CommonTestData()
     file_path = test_data.scripts_config['config_path']
 
-    expected_config_after = copy.deepcopy(test_data.config_json)
+    expected_config_after = copy.deepcopy(test_data.config_dict)
     expected_config_after['default_build_type'] = 'BuildType'
     expected_config_after['cmake_config'] = None
 
-    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_json]
+    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_dict]
     test_data.yaml_manager_mock.save_to_file = MagicMock()
 
     sut = Config(file_path, test_data.yaml_manager_mock)
@@ -165,9 +165,9 @@ def test_update_config_will_save_updated_config_object_into_selected_config_file
 def test_get_target_config_by_name_will_return_target_with_given_name_if_one_exists():
     target_name = 'lib'
     test_data = CommonTestData()
-    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_json]
+    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_dict]
 
-    expected_target = test_data.config_json['cmake_config']['targets'][target_name]
+    expected_target = test_data.config_dict['cmake_config']['targets'][target_name]
     sut = Config('', test_data.yaml_manager_mock)
 
     actual_config = sut.get_target_config_by_name(target_name)
@@ -178,7 +178,7 @@ def test_get_target_config_by_name_will_throw_exception_if_given_target_does_not
     with pytest.raises(ValueError):
         target_name = 'invalid'
         test_data = CommonTestData()
-        test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_json]
+        test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_dict]
 
         sut = Config('', test_data.yaml_manager_mock)
         sut.get_target_config_by_name(target_name)
@@ -188,7 +188,7 @@ def test_list_targets_names_will_return_list_of_defined_targets():
     expected_list_of_targets_names = ['lib', 'exe', 'tests']
 
     test_data = CommonTestData()
-    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_json]
+    test_data.yaml_manager_mock.load_from_file.side_effect = [test_data.scripts_config, test_data.config_dict]
 
     sut = Config('', test_data.yaml_manager_mock)
 
