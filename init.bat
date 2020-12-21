@@ -1,6 +1,8 @@
-python -m venv .env
- .env\Scripts\activate.bat^
- & python -m pip install -r requirements.txt^
+@set cwd=%~dp0
+
+python -m venv %cwd%.env
+ %cwd%.env\Scripts\activate.bat^
+ & python -m pip install -r %cwd%requirements.txt^
  & python -m pip install --upgrade pip^
- & python init_project.py^
- & .env\Scripts\deactivate.bat
+ & python %cwd%init_project.py^
+ & %cwd%.env\Scripts\deactivate.bat

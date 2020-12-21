@@ -1,1 +1,2 @@
-@run_py_cmd.bat run_tests.py %*
+@set cwd=%~dp0
+@%cwd%run_py_cmd.bat run_tests.py %*
