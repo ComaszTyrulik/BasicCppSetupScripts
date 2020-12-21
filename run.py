@@ -53,5 +53,6 @@ try:
     )
 except Exception as exception:
     print(f'{colorama.Fore.LIGHTYELLOW_EX}An error occurred!\nDetails:{colorama.Fore.LIGHTRED_EX} {exception}')
+    traceback.print_exc()
 
 colorama.deinit()

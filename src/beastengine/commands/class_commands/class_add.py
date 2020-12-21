@@ -31,27 +31,27 @@ files under the 'baseDirectory/subDir' path.{white}
         self.class_files_helper = class_files_helper
 
         if header_only == source_only:
-            self.create_header(class_name, target_config, config.cmake, namespace)
-            self.create_source(class_name, target_config, config.cmake, namespace)
+            self.create_header(class_name, target_config, config, namespace)
+            self.create_source(class_name, target_config, config, namespace)
         elif header_only is True:
-            self.create_header(class_name, target_config, config.cmake, namespace)
+            self.create_header(class_name, target_config, config, namespace)
         elif source_only is True:
-            self.create_source(class_name, target_config, config.cmake, namespace)
+            self.create_source(class_name, target_config, config, namespace)
 
         config.update()
 
-    def create_header(self, class_name, target_config, cmake_config, namespace):
+    def create_header(self, class_name, target_config, config: Config, namespace):
         header_name = self.class_files_helper.create_class_header(
             class_name,
-            self.target_config_manager.get_headers_base_directory(target_config, cmake_config),
+            self.target_config_manager.get_headers_base_directory(target_config, config),
             namespace
         )
         self.target_config_manager.add_file_to_headers_list(header_name, target_config)
 
-    def create_source(self, class_name, target_config, cmake_config, namespace):
+    def create_source(self, class_name, target_config, config: Config, namespace):
         source_name = self.class_files_helper.create_class_source(
             class_name,
-            self.target_config_manager.get_sources_base_directory(target_config, cmake_config),
+            self.target_config_manager.get_sources_base_directory(target_config, config),
             namespace
         )
         self.target_config_manager.add_file_to_sources_list(source_name, target_config)
