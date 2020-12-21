@@ -17,24 +17,24 @@ class CMake:
             command_runner: CommandRunner,
             config_files_creator: CMakeConfigFilesCreator,
             config: Config,
-            project_dir: str,
-            build_dir: str
+            project_path: str,
+            build_dir_path: str
     ):
         self.command_runner = command_runner
         self.config_files_creator = config_files_creator
 
-        self.project_dir = project_dir
-        self.build_dir = build_dir
+        self.project_path = project_path
+        self.build_dir_path = build_dir_path
 
         self.config = config.cmake
-        self.config_dir = f'{self.project_dir}/{self.config["directory_name"]}'
+        self.config_dir = f'{self.project_path}/{self.config["directory_name"]}'
         self.targets_config = self.config['targets']
 
     def configure(self):
-        self.command_runner.run_command(CMake.COMMAND_INIT.format(self.build_dir), self.project_dir)
+        self.command_runner.run_command(CMake.COMMAND_INIT.format(self.build_dir_path), self.project_path)
 
     def build(self, config_name: BuildConfigNames):
-        self.command_runner.run_command(CMake.COMMAND_BUILD.format(config_name), self.build_dir)
+        self.command_runner.run_command(CMake.COMMAND_BUILD.format(config_name), self.build_dir_path)
 
     def generate_configs(self):
         self.generate_main_config()

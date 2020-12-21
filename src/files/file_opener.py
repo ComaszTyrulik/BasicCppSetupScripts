@@ -3,12 +3,18 @@ from pathlib import Path
 
 class FileOpener:
     class File:
+        __file = None
+
         def __init__(self, file_path: str):
-            file_mode_read_append_write = 'r+'
-            self.__file = open(file_path, file_mode_read_append_write)
+            try:
+                file_mode_read_append_write = 'r+'
+                self.__file = open(file_path, file_mode_read_append_write)
+            except Exception:
+                raise FileNotFoundError(f'Could not open "{file_path}" file')
 
         def __del__(self):
-            self.__file.close()
+            if self.__file is not None:
+                self.__file.close()
 
         def get_content(self):
             return self.__file.read()

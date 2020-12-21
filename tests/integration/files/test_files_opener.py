@@ -1,4 +1,7 @@
 import os
+
+import pytest
+
 from src.files.file_opener import FileOpener
 
 
@@ -30,3 +33,12 @@ def test_create_will_create_given_file(tmpdir):
 
     assert file_status_before != file_status_after
     assert file_status_after is True
+
+
+def test_open_will_throw_exception_if_given_file_does_not_exist(tmpdir):
+    with pytest.raises(FileNotFoundError):
+        file_name = 'filename.txt'
+        file_path = f'{tmpdir}/{file_name}'
+
+        sut = FileOpener()
+        sut.open(file_path)

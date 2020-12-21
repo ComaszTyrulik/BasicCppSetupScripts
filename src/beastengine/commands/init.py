@@ -4,13 +4,10 @@ import colorama
 
 from src.commandrunners.cmake.cmake import CMake
 from src.commandrunners.conan import Conan
-from src.functions import get_build_dir_name
 
 
 class Init:
-    def __init__(self, project_dir: str, conan: Conan, cmake: CMake):
-        build_dir_path = f'{project_dir}/{get_build_dir_name()}'
-
+    def __init__(self, build_dir_path: str, conan: Conan, cmake: CMake):
         # Remove build directory if exists
         if os.path.isdir(build_dir_path):
             print(f'{colorama.Fore.YELLOW}Removing "{build_dir_path}" directory')
@@ -22,3 +19,4 @@ class Init:
 
         conan.install()
         cmake.generate_configs()
+        cmake.configure()
