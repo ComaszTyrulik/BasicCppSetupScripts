@@ -1,6 +1,7 @@
 import re
 
 from src.beastengine.commands.class_commands.target_cmake_vars_file_opener import TargetCMakeVarsFileOpener
+from src.config.config import Config
 
 
 class TargetConfigManager:
@@ -11,14 +12,14 @@ class TargetConfigManager:
         self.file_opener = file_opener
         self.cmake_var_pattern = re.compile(r'\${[a-zA-Z0-9._-]+\}')
 
-    def get_headers_base_directory(self, target_config, cmake_config):
-        return self.__get_files_base_directory(target_config, cmake_config, target_config['headers'])
+    def get_headers_base_directory(self, target_config, config: Config):
+        return self.__get_files_base_directory(target_config, config, target_config['headers'])
 
-    def get_sources_base_directory(self, target_config, cmake_config):
-        return self.__get_files_base_directory(target_config, cmake_config, target_config['sources'])
+    def get_sources_base_directory(self, target_config, config: Config):
+        return self.__get_files_base_directory(target_config, config, target_config['sources'])
 
-    def __get_files_base_directory(self, target_config, cmake_config, target_files):
-        variables = self.file_opener.open(cmake_config, target_config)
+    def __get_files_base_directory(self, target_config, config: Config, target_files):
+        variables = self.file_opener.open(config, target_config)
 
         base_dir = target_files['base_dir']
         if not base_dir:

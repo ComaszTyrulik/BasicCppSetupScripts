@@ -12,7 +12,7 @@ class ClassRemove:
         class_name: str,
         target_config
     ):
-        headers_base_dir = target_config_manager.get_headers_base_directory(target_config, config.cmake)
+        headers_base_dir = target_config_manager.get_headers_base_directory(target_config, config)
         if class_files_helper.does_class_header_file_exist(class_name, headers_base_dir, target_config) is True:
             class_files_helper.remove_class_header_file(class_name, headers_base_dir)
 
@@ -21,7 +21,7 @@ class ClassRemove:
 
             config.update()
 
-        sources_base_dir = target_config_manager.get_sources_base_directory(target_config, config.cmake)
+        sources_base_dir = target_config_manager.get_sources_base_directory(target_config, config)
         if class_files_helper.does_class_source_file_exist(class_name, sources_base_dir, target_config) is True:
             class_files_helper.remove_class_source_file(class_name, sources_base_dir)
 
