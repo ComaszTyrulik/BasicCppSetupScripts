@@ -30,8 +30,13 @@ class CMake:
         self.config_dir = f'{self.project_path}/{self.config["directory_name"]}'
         self.targets_config = self.config['targets']
 
-    def configure(self):
-        self.command_runner.run_command(CMake.COMMAND_INIT.format(self.build_dir_path), self.project_path)
+    def configure(self, args=None):
+        command = CMake.COMMAND_INIT.format(self.build_dir_path)
+        if args:
+            for argument in args:
+                command += f' {argument}'
+
+        self.command_runner.run_command(command, self.project_path)
 
     def build(self, config_name: BuildConfigNames):
         self.command_runner.run_command(CMake.COMMAND_BUILD.format(config_name), self.build_dir_path)

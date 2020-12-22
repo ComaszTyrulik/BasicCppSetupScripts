@@ -59,6 +59,44 @@ def test_build_will_run_proper_build_command_with_given_config_name(expected_con
     test_data.command_runner_mock.run_command.assert_called_with(expected_command, expected_cwd)
 
 
+def test_configure_will_run_proper_configure_command_with_defined_build_directory():
+    test_data = CommonTestData()
+
+    expected_build_directory = 'build'
+    expected_command = f'cmake -S . -B {expected_build_directory}'
+    cwd = 'cwd'
+
+    sut = CMake(
+        test_data.command_runner_mock,
+        test_data.cmake_config_creator_mock,
+        test_data.config_mock,
+        cwd,
+        expected_build_directory,
+    )
+    sut.configure()
+    test_data.command_runner_mock.run_command.assert_called_with(expected_command, cwd)
+
+
+def test_configure_will_run_proper_configure_command_with_passed_arguments():
+    test_data = CommonTestData()
+
+    arguments = ['-G Ninja', '-DCMAKE_BUILD_TYPE=Debug']
+    expected_command = f'cmake -S . -B {test_data.BUILD_DIR} -G Ninja -DCMAKE_BUILD_TYPE=Debug'
+
+    test_data.sut.configure(arguments)
+    test_data.command_runner_mock.run_command.assert_called_with(expected_command, test_data.PROJECT_DIR)
+
+
+@pytest.mark.parametrize('arguments', [[], None])
+def test_configure_will_run_command_without_arguments_when_passed_arguments_are_empty(arguments):
+    test_data = CommonTestData()
+
+    expected_command = f'cmake -S . -B {test_data.BUILD_DIR}'
+
+    test_data.sut.configure(arguments)
+    test_data.command_runner_mock.run_command.assert_called_with(expected_command, test_data.PROJECT_DIR)
+
+
 def test_generate_configs_will_generate_all_config_files_through_config_generator():
     test_data = CommonTestData()
     expected_config = {

@@ -89,20 +89,35 @@ You can also use it for building the project with desired configuration.{reset}
             self.config_command()
 
     def init(self):
-        usage = '''{green}beast {init}{white}
+        usage = '''{green}beast {init} [-G|--Generator CMake Generator <args>]{white}
         Initializes the project.
         Recreates build ('{build_dir_name}') directory. If it exists, the directory is deleted and a fresh one is created.
         Downloads Conan dependencies based on the 'conanfile.py' file.
         Generates project target's CMake configuration files. Initializes required CMake variables.
         Configures CMake by running {yellow}{cmake_command}{reset}
+        You can pass the same arguments you would normally pass for cmake command. They will be forwarded to the command.
         '''
         cmake_command = self.cmake.COMMAND_INIT.format(self.build_dir_path)
         substitution_map = {'build_dir_name': self.build_dir_path, 'cmake_command': cmake_command}
 
         parser = create_arguments_parser(usage=BeastCommandHelper.format_text(usage, substitution_map))
-        parser.parse_args(sys.argv[2:])
+        generator_help = 'CMake generator to be used for configuring build files. '
+        generator_help += f'For a full list of available generators, run {BeastCommandHelper.COLOR_YELLOW} cmake --help'
+        parser.add_argument(
+            '-G',
+            '--Generator',
+            help=generator_help
+        )
 
-        Init(self.config.build_directory_path, self.conan, self.cmake)
+        args, unknown = parser.parse_known_args(sys.argv[2:])
+        print(args, unknown)
+        cmake_arguments = []
+        if args.Generator:
+            cmake_arguments.append(f'-G {args.Generator}')
+        if unknown:
+            cmake_arguments += unknown
+
+        Init(self.config.build_directory_path, self.conan, self.cmake, cmake_arguments)
 
     def build(self):
         usage = '''{green}beast {build} [-c|--config CONFIG <args>]

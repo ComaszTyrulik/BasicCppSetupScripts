@@ -14,6 +14,12 @@ class BeastCommandHelper:
     COMMAND_NAME_CLASS_PATH_SHOW = 'path'
     COMMAND_NAME_CONFIG = 'config'
 
+    COLOR_RED = colorama.Fore.LIGHTRED_EX
+    COLOR_GREEN = colorama.Fore.LIGHTGREEN_EX
+    COLOR_WHITE = colorama.Fore.LIGHTWHITE_EX
+    COLOR_PURPLE = colorama.Fore.LIGHTMAGENTA_EX
+    COLOR_YELLOW = colorama.Fore.YELLOW
+
     @staticmethod
     def format_text(text: str, substitution_map=None):
         mappings = {

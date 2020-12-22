@@ -1,4 +1,4 @@
-import os
+from os import mkdir, path
 import shutil
 import colorama
 
@@ -7,16 +7,16 @@ from src.commandrunners.conan import Conan
 
 
 class Init:
-    def __init__(self, build_dir_path: str, conan: Conan, cmake: CMake):
+    def __init__(self, build_dir_path: str, conan: Conan, cmake: CMake, cmake_arguments: list):
         # Remove build directory if exists
-        if os.path.isdir(build_dir_path):
+        if path.isdir(build_dir_path):
             print(f'{colorama.Fore.YELLOW}Removing "{build_dir_path}" directory')
             shutil.rmtree(build_dir_path)
 
         # Create build directory
         print(f'{colorama.Fore.YELLOW}Recreating "{build_dir_path}" directory{colorama.Fore.WHITE}\n')
-        os.mkdir(build_dir_path)
+        mkdir(build_dir_path)
 
         conan.install()
         cmake.generate_configs()
-        cmake.configure()
+        cmake.configure(cmake_arguments)
