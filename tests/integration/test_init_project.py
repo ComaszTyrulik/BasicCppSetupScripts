@@ -13,6 +13,7 @@ def test_init_will_copy_dist_file_into_config_file(tmpdir):
     expected_project_path = project_directory
     expected_config_directory = f'{expected_project_path}config/'
     expected_config_path = f'{expected_config_directory}{config_filename}'
+    expected_build_dir_path = f'{expected_project_path}/build'
 
     config_dist_content = '''
 project_path: empty
@@ -29,8 +30,9 @@ config_path: empty
     config_dist_file.close()
 
     # sut
-    init(project_directory, expected_project_path, expected_config_path)
+    init(project_directory, expected_project_path, expected_config_path, expected_build_dir_path)
 
     actual_config = yaml_manager.load_from_file(expected_config_path)
     assert expected_project_path == actual_config['project_path']
     assert expected_config_path == actual_config['config_path']
+    assert expected_build_dir_path == actual_config['build_dir_path']
