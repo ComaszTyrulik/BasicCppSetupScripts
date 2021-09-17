@@ -2,8 +2,6 @@ import os
 
 from pathlib import Path
 
-import pytest
-
 from src.files.file_opener import FileOpener
 from src.program.commands.class_commands.class_files_helper import ClassFilesHelper
 

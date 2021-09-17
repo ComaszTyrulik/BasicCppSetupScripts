@@ -8,10 +8,10 @@ def test_configure_will_run_valid_command():
     command_runner_mock = MagicMock(CommandRunner)
     command_runner_mock.run_command = MagicMock()
 
-    build_dir = 'build'
+    build_dir = 'build/path'
     project_path = 'project/path'
 
-    expected_command = f'cmake -S . -B {build_dir}'
+    expected_command = f'cmake -S . -B "{build_dir}"'
 
     sut = CMake(command_runner_mock, project_path, build_dir)
     sut.configure()
