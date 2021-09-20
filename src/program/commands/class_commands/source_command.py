@@ -1,5 +1,6 @@
 import sys
 
+from src.program.commands.class_commands.class_commands_helper import ClassCommandsHelper
 from src.program.commands.class_commands.class_renamer import ClassRenamer
 from src.program.commands.class_commands.class_remover import ClassRemover
 from src.program.commands.class_commands.class_files_helper import ClassFilesHelper
@@ -12,19 +13,7 @@ from src.config.target_config_manager import TargetConfigManager
 
 
 class SourceCommand:
-    PROGRAM_USAGE = '''{green}{source} <target> <command> [<args>]
-
-{white}This command operates on source files relatively to the target's sources directory defined in project config.
-
-{green}For the list of available targets, execute: {yellow}{config} --list_targets
-
-{purple}Available commands{white}
- {green}{class_add}{white}     Adds new source file to the given target
- {green}{class_rename}{white}     Renames existing source file
- {green}{class_remove}{white}     Removes existing source file from the given target
-
-{yellow}Type "{class} <target> <command> --help" for more information on a specific sources related command{white}
-'''
+    FILE_EXTENSION = '.cpp'
 
     def __init__(
         self,
@@ -38,20 +27,16 @@ class SourceCommand:
         self.target_config_manager = target_config_manager
         self.class_files_helper = class_files_helper
 
+    def get_usage(self):
+        return ClassCommandsHelper.get_single_file_program_usage(ProgramCommandHelper.COMMAND_NAME_SOURCE)
+
     def add(self, target):
-        program_usage = '''{green}{source} <target> {class_add} <source_name> [<args>]
-
-    {white}This command creates single source file under the sources base directories of the given CMake target.
-    If name contains slashes, it will create subdirectories inside base directory.
-    Eg. {yellow}{source} {class_add} subDir/myClass{white} will result in creation of the 'myClass.cpp'
-    file under the 'baseDirectory/subDir' path.{white}
-    '''
-
-        parser = create_arguments_parser(usage=ProgramCommandHelper.format_text(program_usage))
+        program_usage = ClassCommandsHelper.get_add_command_usage(ProgramCommandHelper.COMMAND_NAME_SOURCE, self.FILE_EXTENSION)
+        parser = create_arguments_parser(usage=program_usage)
         parser.add_argument('source_name', help='source file to add', metavar='<source_name>')
         parser.add_argument('-n', '--namespace', help=ProgramCommandHelper.NAMESPACE_PARAM_HELP, type=str)
 
-        command_line_arguments = parser.parse_args(sys.argv[4:])
+        command_line_arguments = self.parse_arguments(parser)
         source_name = command_line_arguments.source_name
 
         namespace = target['namespace']
@@ -64,15 +49,12 @@ class SourceCommand:
         self.cmake.configure()
 
     def rename(self, target):
-        usage = '''{green}{source} <target> {class_rename} <old_source_name> <new_source_name> [<args>]
+        program_usage = ClassCommandsHelper.get_rename_command_usage(ProgramCommandHelper.COMMAND_NAME_SOURCE)
+        parser = create_arguments_parser(usage=program_usage)
+        parser.add_argument('old_source_name', help='source location to move from', metavar='<old_source_name>')
+        parser.add_argument('new_source_name', help='new source location', metavar='<new_source_name>')
 
-{white}This command renames class' source file.
-'''
-        parser = create_arguments_parser(usage=ProgramCommandHelper.format_text(usage))
-        parser.add_argument('old_source_name', help='source to rename', metavar='<old_source_name>')
-        parser.add_argument('new_source_name', help='new source name', metavar='<new_source_name>')
-
-        command_line_arguments = parser.parse_args(sys.argv[4:])
+        command_line_arguments = self.parse_arguments(parser)
         old_source_name = command_line_arguments.old_source_name
         new_source_name = command_line_arguments.new_source_name
 
@@ -82,18 +64,17 @@ class SourceCommand:
         self.cmake.configure()
 
     def remove(self, target):
-        usage = '''{green}{source} <target> {class_remove} <source_name> [<args>]
-
-{white}This command removes source file from the sources base directories.
-If source name contains slashes, it will also delete empty subdirectories inside base directory.
-'''
-        parser = create_arguments_parser(usage=ProgramCommandHelper.format_text(usage))
+        program_usage = ClassCommandsHelper.get_remove_command_usage(ProgramCommandHelper.COMMAND_NAME_SOURCE)
+        parser = create_arguments_parser(usage=program_usage)
         parser.add_argument('source_name', help='source to remove', metavar='<source_name>')
 
-        command_line_arguments = parser.parse_args(sys.argv[4:])
+        command_line_arguments = self.parse_arguments(parser)
         class_name = command_line_arguments.source_name
 
         remover = ClassRemover(self.config, self.target_config_manager, self.class_files_helper)
         remover.remove_source(class_name, target)
 
         self.cmake.configure()
+
+    def parse_arguments(self, parser):
+        return parser.parse_args(sys.argv[5:])

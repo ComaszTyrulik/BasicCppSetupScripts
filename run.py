@@ -48,7 +48,12 @@ try:
 except Exception as exception:
     print(f'{colorama.Fore.LIGHTYELLOW_EX}An error occurred!\nDetails:{colorama.Fore.LIGHTRED_EX} {exception}')
     print('')
-    print('Exception traceback:')
-    traceback.print_exc()
+
+    log_filename = 'errors.log'
+    print(f'{colorama.Fore.LIGHTYELLOW_EX}Traceback saved to: {colorama.Fore.WHITE}{log_filename}')
+
+    file_opener = FileOpener()
+    file_opener.create(log_filename)
+    file_opener.open(log_filename).replace_content(traceback.format_exc())
 
 colorama.deinit()

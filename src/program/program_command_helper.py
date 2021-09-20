@@ -3,6 +3,7 @@ import colorama
 
 class ProgramCommandHelper:
     DIRECTORY_BUILD = 'build'
+    PROGRAM_NAME = 'run'
 
     COMMAND_NAME_CONAN = 'conan'
     COMMAND_NAME_CMAKE = 'cmake'
@@ -11,10 +12,12 @@ class ProgramCommandHelper:
     COMMAND_NAME_SOURCE = 'source'
     COMMAND_NAME_CLASS = 'class'
     COMMAND_NAME_CLASS_ADD = 'add'
-    COMMAND_NAME_CLASS_RENAME = 'ren'
-    COMMAND_NAME_CLASS_REMOVE = 'del'
+    COMMAND_NAME_CLASS_RENAME = 'mv'
+    COMMAND_NAME_CLASS_REMOVE = 'rm'
     COMMAND_NAME_CLASS_PATH_SHOW = 'path'
     COMMAND_NAME_CONFIG = 'config'
+    COMMAND_NAME_TARGET = 'target'
+    PARAM_TARGETS_LIST = '--targets-list'
 
     NAMESPACE_PARAM_HELP = 'namespace in which the class should reside. By default it uses the namespace defined in target\'s config'
 
@@ -39,6 +42,9 @@ class ProgramCommandHelper:
             'config': ProgramCommandHelper.COMMAND_NAME_CONFIG,
             'conan': ProgramCommandHelper.COMMAND_NAME_CONAN,
             'cmake': ProgramCommandHelper.COMMAND_NAME_CMAKE,
+            'targets_list': ProgramCommandHelper.PARAM_TARGETS_LIST,
+            'target': ProgramCommandHelper.COMMAND_NAME_TARGET,
+            'program_name': ProgramCommandHelper.PROGRAM_NAME,
         }
 
         if substitution_map is not None:
