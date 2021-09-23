@@ -8,7 +8,7 @@ from mock import MagicMock
 @pytest.mark.parametrize('project_path', ['./', '', None])
 def test_get_scripts_config_path_will_return_valid_scripts_config_file_path_when_different_project_paths_provided(project_path):
     expected_config_path = f'{project_path}config/scripts_config.yaml'
-    assert expected_config_path == functions.get_scripts_config_path(project_path)
+    assert expected_config_path == functions.get_scripts_config_file_path(project_path)
 
 
 @pytest.mark.parametrize('project_path', ['./', '', None])

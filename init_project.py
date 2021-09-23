@@ -5,12 +5,12 @@ from pathlib import Path
 from src.files.file_opener import FileOpener
 from src.yaml_utils.yaml_manager import YAMLManager
 from argparse_prompt import PromptParser
-from src.functions import get_scripts_dist_config_path, get_scripts_config_path
+from src.functions import get_scripts_dist_config_path, get_scripts_config_file_path
 
 
-def init(cwd: str, project_path: str, config_path: str):
+def init(cwd: str, project_path: str, config_path: str, build_dir_path: str):
     dist_config_filename = get_scripts_dist_config_path(cwd)
-    config_filename = get_scripts_config_path(cwd)
+    config_filename = get_scripts_config_file_path(cwd)
 
     shutil.copyfile(dist_config_filename, config_filename)
     yaml_manager = YAMLManager(FileOpener())
@@ -18,6 +18,7 @@ def init(cwd: str, project_path: str, config_path: str):
     config = yaml_manager.load_from_file(config_filename)
     config['project_path'] = project_path
     config['config_path'] = config_path
+    config['build_dir_path'] = build_dir_path
 
     yaml_manager.save_to_file(config, config_filename)
 
@@ -41,13 +42,23 @@ def get_config_path(project_path: str):
     return parser.parse_args().config_path.replace('\\', '/')
 
 
+def get_build_dir_path(project_path: str):
+    default_config_path = f'{project_path}/build'
+
+    parser = PromptParser()
+    parser.add_argument('--build_path', '-bp', help='Path to your C++ project\'s build directory', default=default_config_path)
+
+    return parser.parse_args().build_path.replace('\\', '/')
+
+
 def start():
     project_path = get_project_path()
     config_path = get_config_path(project_path)
+    build_dir_path = get_build_dir_path(project_path)
 
     current_filename = getframeinfo(currentframe()).filename
     cwd = Path(current_filename).resolve().parent.__str__().replace('\\', '/')
-    init(cwd + '/', project_path, config_path)
+    init(cwd + '/', project_path, config_path, build_dir_path)
 
 
 if __name__ == "__main__":

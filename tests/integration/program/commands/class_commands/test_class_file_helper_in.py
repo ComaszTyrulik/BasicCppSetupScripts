@@ -2,80 +2,48 @@ import os
 
 from pathlib import Path
 
-import pytest
-
 from src.files.file_opener import FileOpener
-from src.beastengine.commands.class_commands.class_files_helper import ClassFilesHelper
+from src.program.commands.class_commands.class_files_helper import ClassFilesHelper
 
 
-def test_does_header_file_exist_will_return_true_if_header_is_on_the_target_headers_list_and_file_exists(tmpdir):
+def test_does_header_file_exist_will_return_true_if_file_exists(tmpdir):
     headers_base_directory = tmpdir
     class_name = 'test_class'
-    target_config = {'headers': {'files': [f'{class_name}.h']}}
 
     # Create file
     file_path = f'{headers_base_directory}/{class_name}.h'
     open(file_path, 'x')
 
     sut = ClassFilesHelper(FileOpener())
-    assert sut.does_class_header_file_exist(class_name, headers_base_directory, target_config) is True
+    assert sut.does_class_header_file_exist(class_name, headers_base_directory) is True
 
 
-def test_does_header_file_exist_will_return_false_if_header_is_on_the_target_headers_list_but_file_does_not_exist(tmpdir):
+def test_does_header_file_exist_will_return_false_if_file_does_not_exist(tmpdir):
     headers_base_directory = tmpdir
     class_name = 'test_class'
-    target_config = {'headers': {'files': [f'{class_name}.h']}}
 
     sut = ClassFilesHelper(FileOpener())
-    assert sut.does_class_header_file_exist(class_name, headers_base_directory, target_config) is False
+    assert sut.does_class_header_file_exist(class_name, headers_base_directory) is False
 
 
-def test_does_header_file_exist_will_return_false_if_header_is_not_on_the_target_headers_list_but_file_exists(tmpdir):
-    headers_base_directory = tmpdir
-    class_name = 'test_class'
-    target_config = {'headers': {'files': []}}
-
-    # Create file
-    file_path = f'{headers_base_directory}/{class_name}.h'
-    open(file_path, 'x')
-
-    sut = ClassFilesHelper(FileOpener())
-    assert sut.does_class_header_file_exist(class_name, headers_base_directory, target_config) is False
-
-
-def test_does_source_file_exist_will_return_true_if_source_is_on_the_target_sources_list_and_file_exists(tmpdir):
+def test_does_source_file_exist_will_return_true_if_file_exists(tmpdir):
     sources_base_directory = tmpdir
     class_name = 'test_class'
-    target_config = {'sources': {'files': [f'{class_name}.cpp']}}
 
     # Create file
     file_path = f'{sources_base_directory}/{class_name}.cpp'
     open(file_path, 'x')
 
     sut = ClassFilesHelper(FileOpener())
-    assert sut.does_class_source_file_exist(class_name, sources_base_directory, target_config) is True
+    assert sut.does_class_source_file_exist(class_name, sources_base_directory) is True
 
 
-def test_does_source_file_exist_will_return_false_if_source_is_on_the_target_sources_list_but_file_does_not_exist(tmpdir):
+def test_does_source_file_exist_will_return_false_if_file_does_not_exist(tmpdir):
     sources_base_directory = tmpdir
     class_name = 'test_class'
-    target_config = {'sources': {'files': [f'{class_name}.cpp']}}
 
     sut = ClassFilesHelper(FileOpener())
-    assert sut.does_class_source_file_exist(class_name, sources_base_directory, target_config) is False
-
-
-def test_does_source_file_exist_will_return_false_if_source_is_not_on_the_target_sources_list_but_file_exists(tmpdir):
-    sources_base_directory = tmpdir
-    class_name = 'test_class'
-    target_config = {'sources': {'files': []}}
-
-    # Create file
-    file_path = f'{sources_base_directory}/{class_name}.cpp'
-    open(file_path, 'x')
-
-    sut = ClassFilesHelper(FileOpener())
-    assert sut.does_class_source_file_exist(class_name, sources_base_directory, target_config) is False
+    assert sut.does_class_source_file_exist(class_name, sources_base_directory) is False
 
 
 ###################################
@@ -101,18 +69,26 @@ def test_create_class_header_will_create_header_file_in_proper_path_with_base_di
     assert expected_filename == actual_filename
 
 
-def test_create_class_header_will_create_throw_exception_if_file_already_exist(tmpdir):
-    with pytest.raises(FileExistsError):
-        header_class_name = 'TestClass'
+def test_create_class_header_will_return_without_modifying_file_if_file_already_exist(tmpdir):
+    header_class_name = 'TestClass'
 
-        expected_filename = f'{header_class_name}.h'
-        file_base_dir = tmpdir
-        full_file_path = f'{file_base_dir}/{expected_filename}'
+    expected_filename = f'{header_class_name}.h'
+    file_base_dir = tmpdir
+    full_file_path = f'{file_base_dir}/{expected_filename}'
 
-        open(full_file_path, 'x')
+    expected_file_content = 'some content'
+    file = open(full_file_path, 'x')
+    file.close()
 
-        sut = ClassFilesHelper(FileOpener())
-        sut.create_class_header(header_class_name, file_base_dir)
+    file = open(full_file_path, 'w')
+    file.write(expected_file_content)
+    file.close()
+
+    sut = ClassFilesHelper(FileOpener())
+    sut.create_class_header(header_class_name, file_base_dir)
+
+    file_after = open(full_file_path, 'r')
+    assert expected_file_content == file_after.read()
 
 
 def test_create_class_header_will_create_subdirectories_with_base_directory_if_given_file_path_contains_any(tmpdir):
@@ -235,17 +211,26 @@ def test_create_class_source_will_create_source_file_in_proper_path_with_base_di
     assert expected_filename == actual_filename
 
 
-def test_create_class_source_will_throw_exception_if_file_already_exists(tmpdir):
-    with pytest.raises(FileExistsError):
-        source_class_name = 'TestClass'
+def test_create_class_source__will_return_without_modifying_file_if_file_already_exist(tmpdir):
+    source_class_name = 'TestClass'
 
-        expected_filename = f'{source_class_name}.cpp'
-        file_base_dir = tmpdir
-        full_file_path = f'{file_base_dir}/{expected_filename}'
-        open(full_file_path, 'x')
+    expected_filename = f'{source_class_name}.cpp'
+    file_base_dir = tmpdir
+    full_file_path = f'{file_base_dir}/{expected_filename}'
 
-        sut = ClassFilesHelper(FileOpener())
-        sut.create_class_source(source_class_name, file_base_dir)
+    expected_file_content = 'some content'
+    file = open(full_file_path, 'x')
+    file.close()
+
+    file = open(full_file_path, 'w')
+    file.write(expected_file_content)
+    file.close()
+
+    sut = ClassFilesHelper(FileOpener())
+    sut.create_class_source(source_class_name, file_base_dir)
+
+    file_after = open(full_file_path, 'r')
+    assert expected_file_content == file_after.read()
 
 
 def test_create_class_source_will_create_subdirectories_with_base_directory_if_given_file_path_contains_any(tmpdir):
@@ -298,7 +283,7 @@ def test_create_class_source_will_not_create_subdirectories_with_base_directory_
     assert file_status_after is True
 
 
-def test_create_class_header_will_not_create_subdirectories_with_base_directory_if_they_already_exist_and_contain_file(tmpdir):
+def test_create_class_source_will_not_create_subdirectories_with_base_directory_if_they_already_exist_and_contain_file(tmpdir):
     subdir1 = 'subdir1'
     subdir2 = 'subdir2'
     subdir3 = 'subdir3'
