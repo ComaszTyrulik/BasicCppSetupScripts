@@ -12,11 +12,11 @@ def test_available_names_will_return_valid_config_names():
 
 def test_all_configs_will_return_array_of_configurations():
     expected_configurations = [
-        BuildConfigNames(BuildConfigNames.CONFIG_DEBUG),
-        BuildConfigNames(BuildConfigNames.CONFIG_RELEASE),
-        BuildConfigNames(BuildConfigNames.CONFIG_REL_WITH_DEBUG),
-        BuildConfigNames(BuildConfigNames.CONFIG_MIN_SIZE_REL),
+        BuildConfigNames.CONFIG_DEBUG.value,
+        BuildConfigNames.CONFIG_RELEASE.value,
+        BuildConfigNames.CONFIG_REL_WITH_DEBUG.value,
+        BuildConfigNames.CONFIG_MIN_SIZE_REL.value,
     ]
-    actual_configurations = BuildConfigNames.all_configs()
 
+    actual_configurations = BuildConfigNames.all_configs()
     assert expected_configurations == actual_configurations

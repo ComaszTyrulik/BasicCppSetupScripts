@@ -26,7 +26,7 @@ class BuildConfigNames(Enum):
     def all_configs():
         configs = []
         for name, member in BuildConfigNames.__members__.items():
-            configs.append(member)
+            configs.append(member.value)
 
         return configs
 

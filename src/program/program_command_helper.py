@@ -17,7 +17,10 @@ class ProgramCommandHelper:
     COMMAND_NAME_CLASS_PATH_SHOW = 'path'
     COMMAND_NAME_CONFIG = 'config'
     COMMAND_NAME_TARGET = 'target'
+    COMMAND_CMAKE_CONFIGURE = 'configure'
+    COMMAND_CMAKE_BUILD = 'build'
     PARAM_TARGETS_LIST = '--targets-list'
+    PARAM_CMAKE_CONFIG = '--config'
 
     NAMESPACE_PARAM_HELP = 'namespace in which the class should reside. By default it uses the namespace defined in target\'s config'
 
@@ -45,6 +48,9 @@ class ProgramCommandHelper:
             'targets_list': ProgramCommandHelper.PARAM_TARGETS_LIST,
             'target': ProgramCommandHelper.COMMAND_NAME_TARGET,
             'program_name': ProgramCommandHelper.PROGRAM_NAME,
+            'cmake_configure': ProgramCommandHelper.COMMAND_CMAKE_CONFIGURE,
+            'cmake_build': ProgramCommandHelper.COMMAND_CMAKE_BUILD,
+            'cmake_build_config': ProgramCommandHelper.PARAM_CMAKE_CONFIG,
         }
 
         if substitution_map is not None:

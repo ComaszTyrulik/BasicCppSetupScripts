@@ -8,6 +8,6 @@ class Conan:
         self.project_path = project_path
 
     def install(self, conan_file_path, conan_build_dir):
-        for name, member in BuildConfigNames.__members__.items():
-            command = f'conan install "{conan_file_path}" -if="{conan_build_dir}" -g cmake_multi --build=missing -s build_type={member.value}'
+        for config in BuildConfigNames.all_configs():
+            command = f'conan install "{conan_file_path}" -if="{conan_build_dir}" -g cmake_multi --build=missing -s build_type={config}'
             self.command_runner.run_command(command, self.project_path)
