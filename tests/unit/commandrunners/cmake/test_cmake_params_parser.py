@@ -5,9 +5,10 @@ def test_parse_will_parse_all_parameters_with_valid_format_and_return_them_as_si
     param1 = '-DPARAM_1=ON'
     param2 = '-DPARAM_2=OFF'
     param3 = '-DPARAM_3=SomeOtherValue'
+    param4 = '-DPARAM_4=SomeOtherValue123'
 
-    params_to_parse = [param1, param2]
-    expected_params_string = f'{param1} {param2} {param3}'
+    params_to_parse = [param1, param2, param3, param4]
+    expected_params_string = f'{param1} {param2} {param3} {param4}'
 
     actual_params_string = CMakeParamsParser.parse(params_to_parse)
     assert actual_params_string == expected_params_string
