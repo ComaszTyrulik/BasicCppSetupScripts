@@ -8,7 +8,7 @@ from src.commandrunners.conan import Conan
 from src.program.commands.class_commands.class_files_helper import ClassFilesHelper
 from src.config.target_config_manager import TargetConfigManager
 from src.functions import get_scripts_config_file_path, get_scripts_config_path
-from src.commandrunners.cmake import CMake
+from src.commandrunners.cmake.cmake import CMake
 from src.config.config import Config
 from src.commandrunners.command_runner import CommandRunner
 from src.files.file_opener import FileOpener

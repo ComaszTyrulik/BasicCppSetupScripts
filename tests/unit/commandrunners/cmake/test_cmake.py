@@ -2,12 +2,12 @@ from unittest.mock import MagicMock, call
 
 import pytest
 
-from src.commandrunners.cmake import CMake
+from src.commandrunners.cmake.cmake import CMake
 from src.commandrunners.command_runner import CommandRunner
 from src.config.config_names import BuildConfigNames
 
 
-def test_configure_will_run_valid_command():
+def test_configure_will_run_configuration_command_without_any_parameters_if_no_arguments_provided():
     command_runner_mock = MagicMock(CommandRunner)
     command_runner_mock.run_command = MagicMock()
 
@@ -18,6 +18,36 @@ def test_configure_will_run_valid_command():
 
     sut = CMake(command_runner_mock, project_path, build_dir)
     sut.configure()
+    command_runner_mock.run_command.assert_called_with(expected_command, project_path)
+
+
+def test_configure_will_run_configuration_command_without_any_parameters_if_empty_string_provided():
+    command_runner_mock = MagicMock(CommandRunner)
+    command_runner_mock.run_command = MagicMock()
+
+    build_dir = 'build/path'
+    project_path = 'project/path'
+
+    expected_command = f'cmake -S . -B "{build_dir}"'
+
+    sut = CMake(command_runner_mock, project_path, build_dir)
+    sut.configure('')
+    command_runner_mock.run_command.assert_called_with(expected_command, project_path)
+
+
+def test_configure_will_run_configuration_command_with_provided_parameters():
+    command_runner_mock = MagicMock(CommandRunner)
+    command_runner_mock.run_command = MagicMock()
+
+    build_dir = 'build/path'
+    project_path = 'project/path'
+
+    expected_param1 = '-DPARAM_1=ON'
+    expected_param2 = '-DPARAM_2=OFF'
+    expected_command = f'cmake -S . -B "{build_dir}" {expected_param1} {expected_param2}'
+
+    sut = CMake(command_runner_mock, project_path, build_dir)
+    sut.configure(f'{expected_param1} {expected_param2}')
     command_runner_mock.run_command.assert_called_with(expected_command, project_path)
 
 

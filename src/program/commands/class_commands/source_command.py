@@ -7,7 +7,7 @@ from src.program.commands.class_commands.class_files_helper import ClassFilesHel
 from src.program.commands.class_commands.class_adder import ClassAdder
 from src.functions import create_arguments_parser
 from src.program.program_command_helper import ProgramCommandHelper
-from src.commandrunners.cmake import CMake
+from src.commandrunners.cmake.cmake import CMake
 from src.config.config import Config
 from src.config.target_config_manager import TargetConfigManager
 

@@ -1,6 +1,7 @@
 import sys
 import argparse
 
+from src.commandrunners.cmake.cmake_params_parser import CMakeParamsParser
 from src.commandrunners.conan import Conan
 from src.functions import create_arguments_parser
 from src.program.commands.class_commands.class_files_helper import ClassFilesHelper
@@ -8,7 +9,7 @@ from src.config.target_config_manager import TargetConfigManager
 from src.commandrunners.command_runner import CommandRunner
 from src.program.commands.target_command import TargetCommand
 from src.program.program_command_helper import ProgramCommandHelper
-from src.commandrunners.cmake import CMake
+from src.commandrunners.cmake.cmake import CMake
 from src.config.config import Config
 from src.config.config_names import BuildConfigNames
 
@@ -123,7 +124,9 @@ as well as running cmake and conan functions.{reset}
 
         command_line_args = parser.parse_args(sys.argv[2:3])
         if command_line_args.command == ProgramCommandHelper.COMMAND_CMAKE_CONFIGURE:
-            self.cmake.configure()
+            _, command_line_args = create_arguments_parser().parse_known_args(sys.argv[3:])
+            self.cmake.configure(CMakeParamsParser.parse(command_line_args))
+
             return
 
         # CMake Build
