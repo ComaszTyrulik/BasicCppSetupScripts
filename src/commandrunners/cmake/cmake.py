@@ -12,8 +12,12 @@ class CMake:
         self.project_path = project_path
         self.build_dir_path = build_dir_path
 
-    def configure(self):
-        self.command_runner.run_command(CMake.COMMAND_CONFIGURE.format(self.build_dir_path), self.project_path)
+    def configure(self, parameters=''):
+        if parameters != '':
+            parameters = ' ' + parameters
+
+        command = CMake.COMMAND_CONFIGURE.format(self.build_dir_path) + parameters
+        self.command_runner.run_command(command, self.project_path)
 
     def build(self, config=None):
         if config is not None:
